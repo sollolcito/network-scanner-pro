@@ -2,11 +2,12 @@ from scanner.discover import scan_ports, get_hostname
 from scanner.export import export_csv
 from scanner.workers import run_threads
 from scanner.network import get_local_network
+from scanner.stats import calculate_stats
 
 import time
 
 print("=" * 50)
-print("NETWORK SCANNER PRO v2.1")
+print("NETWORK SCANNER PRO v2.2")
 print("=" * 50)
 
 detected = get_local_network()
@@ -90,6 +91,20 @@ elapsed = round(
     time.time() - start_time,
     2
 )
+
+stats = calculate_stats(results)
+
+print("=" * 50)
+print("ESTADISTICAS")
+print("=" * 50)
+
+for service, count in stats.items():
+
+    print(
+        f"{service:<6}: {count}"
+    )
+
+print()
 
 print("=" * 50)
 print("ESCANEO FINALIZADO")
