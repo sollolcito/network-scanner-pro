@@ -46,7 +46,7 @@ Instalación
 
 Clonar el repositorio:
 
-git clone https://github.com/TU_USUARIO/network-scanner-pro.git
+git clone https://github.com/sollolcito/network-scanner-pro.git
 
 Entrar al proyecto:
 
