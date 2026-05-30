@@ -1,132 +1,101 @@
-Network Scanner Pro v1.0
+Network Scanner Pro
 
-Descripción
+Network Scanner Pro es una herramienta de descubrimiento y análisis de red desarrollada en Python.
 
-Network Scanner Pro es una herramienta desarrollada en Python para descubrir dispositivos activos en una red local, identificar servicios comunes y generar reportes en formato CSV.
-
-El proyecto fue diseñado con una arquitectura modular para facilitar futuras mejoras y servir como base para herramientas de administración de redes y ciberseguridad.
-
----
+Permite detectar dispositivos con servicios accesibles en una red local, identificar nombres de host, generar reportes CSV y obtener estadísticas básicas de los servicios encontrados.
 
 Características
 
-- Escaneo de una subred completa.
-- Detección de hosts activos.
-- Identificación de servicios comunes:
+- Escaneo de redes IPv4 (/24)
+- Detección automática de red local
+- Escaneo concurrente mediante multithreading
+- Resolución de nombres de host (hostname)
+- Detección de servicios comunes:
   - SSH (22)
   - HTTP (80)
   - HTTPS (443)
   - SMB (445)
   - RDP (3389)
-- Resolución de hostname.
-- Exportación de resultados a CSV.
-- Compatible con Linux y Termux.
+- Generación de reportes CSV
+- Estadísticas automáticas de servicios detectados
+- Compatible con Linux, Android (Termux) y Windows
 
----
+Tecnologías utilizadas
 
-Estructura del Proyecto
-
-network-scanner-pro/
-
-├── scanner/
-
-│   ├── discover.py
-
-│   └── export.py
-
-├── reports/
-
-├── main.py
-
-└── README.md
-
----
+- Python 3
+- Socket Programming
+- ThreadPoolExecutor
+- CSV Reporting
+- Git
+- GitHub
 
 Instalación
 
-Clonar el repositorio:
-
 git clone https://github.com/sollolcito/network-scanner-pro.git
-
-Entrar al proyecto:
-
 cd network-scanner-pro
-
----
-
-Ejecución
-
 python main.py
-
-Ingresar una red en formato:
-
-192.168.0
-
-Ejemplo:
-
-Ingrese red (ej: 192.168.0): 192.168.0
-
----
 
 Ejemplo de salida
 
-[+] Host: 192.168.0.1
+==================================================
+NETWORK SCANNER PRO
+==================================================
 
-Nombre: router
+Red detectada: 192.168.0.0/24
 
-HTTP (Puerto 80)
+[+] Host: 192.168.0.42
+    Nombre: ARANDNBK24523
+    SMB (Puerto 445)
+    RDP (Puerto 3389)
 
-HTTPS (Puerto 443)
+==================================================
+ESTADISTICAS
+==================================================
 
-[+] Host: 192.168.0.15
+SSH   : 17
+HTTP  : 6
+HTTPS : 2
+SMB   : 1
+RDP   : 1
 
-Nombre: PC-OFICINA
+Historial de versiones
 
-SMB (Puerto 445)
+v1.0
 
----
-
-Reportes
-
-Los resultados se almacenan automáticamente en la carpeta:
-
-reports/
-
-Formato:
-
-scan_AAAAMMDD_HHMMSS.csv
-
----
-
-Tecnologías Utilizadas
-
-- Python
-- Socket Programming
-- CSV
-- Networking
-- TCP/IP
-
----
-
-Próximas Versiones
+- Escaneo básico de red
+- Detección de servicios
+- Exportación CSV
 
 v2.0
 
-- Escaneo concurrente (multithreading)
-- Mejor rendimiento
+- Escaneo multithreading
+- Mejoras de rendimiento
+
+v2.1
+
+- Detección automática de red
+
+v2.2
+
+- Estadísticas de servicios
+- Reportes CSV mejorados
+- Inclusión de hostname en reportes
+
+Próximas mejoras
+
+v2.3
+
+- Device Fingerprinting
+- Identificación de fabricantes y tipos de dispositivos
+
+v2.4
+
+- Descubrimiento avanzado de hosts
 
 v3.0
 
 - Reportes HTML
-- Estadísticas visuales
-
-v4.0
-
-- Dashboard Web con Flask
-- Historial de escaneos
-
----
 
 Autor
 
-Proyecto desarrollado como parte de un portafolio de aprendizaje en redes, IT y ciberseguridad.
+Esteban Gustavo Herrera González
