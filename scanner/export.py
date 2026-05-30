@@ -22,6 +22,8 @@ def export_csv(results):
         writer.writerow([
             "IP",
             "HOSTNAME",
+            "FABRICANTE",
+            "TIPO",
             "SERVICIOS"
         ])
 
@@ -38,6 +40,8 @@ def export_csv(results):
             writer.writerow([
                 host["ip"],
                 host["hostname"],
+                host["vendor"],
+                host["device_type"],
                 ", ".join(services)
             ])
 

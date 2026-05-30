@@ -3,11 +3,12 @@ from scanner.export import export_csv
 from scanner.workers import run_threads
 from scanner.network import get_local_network
 from scanner.stats import calculate_stats
+from scanner.fingerprint import identify_device
 
 import time
 
 print("=" * 50)
-print("NETWORK SCANNER PRO v2.2")
+print("NETWORK SCANNER PRO v2.3")
 print("=" * 50)
 
 detected = get_local_network()
@@ -61,8 +62,15 @@ def scan_host(ip):
 
         hostname = get_hostname(ip)
 
+        vendor, device_type = identify_device(
+            hostname,
+            services
+        )
+
         print(f"[+] Host: {ip}")
         print(f"    Nombre: {hostname}")
+        print(f"    Fabricante: {vendor}")
+        print(f"    Tipo: {device_type}")
 
         for item in services:
 
@@ -76,6 +84,8 @@ def scan_host(ip):
         return {
             "ip": ip,
             "hostname": hostname,
+            "vendor": vendor,
+            "device_type": device_type,
             "services": services
         }
 
