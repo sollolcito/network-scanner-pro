@@ -83,6 +83,26 @@ tr:hover {{
     background-color: #e5e7eb;
 }}
 
+.risk-low {{
+    background-color: #dcfce7;
+    font-weight: bold;
+}}
+
+.risk-medium {{
+    background-color: #fef3c7;
+    font-weight: bold;
+}}
+
+.risk-high {{
+    background-color: #fed7aa;
+    font-weight: bold;
+}}
+
+.risk-critical {{
+    background-color: #fecaca;
+    font-weight: bold;
+}}
+
 </style>
 
 </head>
@@ -133,6 +153,7 @@ tr:hover {{
 <th>Fabricante</th>
 <th>Modelo</th>
 <th>Categoria</th>
+<th>Riesgo</th>
 <th>Servicios</th>
 </tr>
 """
@@ -160,6 +181,25 @@ tr:hover {{
         elif "network" in category:
             css_class = "network"
 
+        risk = host.get(
+            "risk",
+            "DESCONOCIDO"
+        )
+
+        risk_class = ""
+
+        if risk == "BAJO":
+            risk_class = "risk-low"
+
+        elif risk == "MEDIO":
+            risk_class = "risk-medium"
+
+        elif risk == "ALTO":
+            risk_class = "risk-high"
+
+        elif risk == "CRITICO":
+            risk_class = "risk-critical"
+
         html += f"""
 <tr class="{css_class}">
 <td>{host['ip']}</td>
@@ -167,6 +207,7 @@ tr:hover {{
 <td>{host['vendor']}</td>
 <td>{host['model']}</td>
 <td>{host['category']}</td>
+<td class="{risk_class}">{risk}</td>
 <td>{", ".join(services)}</td>
 </tr>
 """
