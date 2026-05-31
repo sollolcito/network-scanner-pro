@@ -1,3 +1,4 @@
+
 import csv
 from datetime import datetime
 
@@ -23,7 +24,8 @@ def export_csv(results):
             "IP",
             "HOSTNAME",
             "FABRICANTE",
-            "TIPO",
+            "MODELO",
+            "CATEGORIA",
             "SERVICIOS"
         ])
 
@@ -41,7 +43,8 @@ def export_csv(results):
                 host["ip"],
                 host["hostname"],
                 host["vendor"],
-                host["device_type"],
+                host["model"],
+                host["category"],
                 ", ".join(services)
             ])
 

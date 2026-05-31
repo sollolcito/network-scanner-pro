@@ -62,7 +62,7 @@ def scan_host(ip):
 
         hostname = get_hostname(ip)
 
-        vendor, device_type = identify_device(
+        vendor, model, category = identify_device(
             hostname,
             services
         )
@@ -70,7 +70,8 @@ def scan_host(ip):
         print(f"[+] Host: {ip}")
         print(f"    Nombre: {hostname}")
         print(f"    Fabricante: {vendor}")
-        print(f"    Tipo: {device_type}")
+        print(f"    Modelo: {model}")
+        print(f"    Categoria: {category}")
 
         for item in services:
 
@@ -85,7 +86,8 @@ def scan_host(ip):
             "ip": ip,
             "hostname": hostname,
             "vendor": vendor,
-            "device_type": device_type,
+            "model": model,
+            "category": category,
             "services": services
         }
 
