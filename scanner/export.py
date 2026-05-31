@@ -1,6 +1,6 @@
-
 import csv
 from datetime import datetime
+
 
 def export_csv(results):
 
@@ -26,6 +26,7 @@ def export_csv(results):
             "FABRICANTE",
             "MODELO",
             "CATEGORIA",
+            "RIESGO",
             "SERVICIOS"
         ])
 
@@ -45,6 +46,7 @@ def export_csv(results):
                 host["vendor"],
                 host["model"],
                 host["category"],
+                host["risk"],
                 ", ".join(services)
             ])
 

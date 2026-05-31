@@ -1,14 +1,17 @@
 from scanner.discover import scan_ports, get_hostname
 from scanner.export import export_csv
+from scanner.html_report import export_html
+from scanner.json_export import export_json
 from scanner.workers import run_threads
 from scanner.network import get_local_network
 from scanner.stats import calculate_stats
 from scanner.fingerprint import identify_device
+from scanner.risk import calculate_risk
 
 import time
 
 print("=" * 50)
-print("NETWORK SCANNER PRO v2.3")
+print("NETWORK SCANNER PRO v2.8")
 print("=" * 50)
 
 detected = get_local_network()
@@ -54,6 +57,7 @@ for i in range(1, 255):
 
     ips.append(f"{network}.{i}")
 
+
 def scan_host(ip):
 
     services = scan_ports(ip)
@@ -67,11 +71,16 @@ def scan_host(ip):
             services
         )
 
+        risk = calculate_risk(
+            services
+        )
+
         print(f"[+] Host: {ip}")
         print(f"    Nombre: {hostname}")
         print(f"    Fabricante: {vendor}")
         print(f"    Modelo: {model}")
         print(f"    Categoria: {category}")
+        print(f"    Riesgo: {risk}")
 
         for item in services:
 
@@ -88,10 +97,12 @@ def scan_host(ip):
             "vendor": vendor,
             "model": model,
             "category": category,
+            "risk": risk,
             "services": services
         }
 
     return None
+
 
 results = run_threads(
     scan_host,
@@ -132,10 +143,22 @@ print(
 
 if results:
 
-    report = export_csv(results)
+    csv_report = export_csv(results)
 
-    print("\nReporte guardado:")
-    print(report)
+    html_report = export_html(
+        results,
+        stats,
+        elapsed
+    )
+
+    json_report = export_json(
+        results
+    )
+
+    print("\nReportes guardados:")
+    print(csv_report)
+    print(html_report)
+    print(json_report)
 
 else:
 
