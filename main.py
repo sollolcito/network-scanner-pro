@@ -7,12 +7,19 @@ from scanner.network import get_local_network
 from scanner.stats import calculate_stats
 from scanner.fingerprint import identify_device
 from scanner.risk import calculate_risk
+from scanner.database import (
+    init_database,
+    save_scan
+)
 
+from datetime import datetime
 import time
 
 print("=" * 50)
-print("NETWORK SCANNER PRO v2.8")
+print("NETWORK SCANNER PRO v3.0")
 print("=" * 50)
+
+init_database()
 
 detected = get_local_network()
 
@@ -25,11 +32,8 @@ if detected:
     ).strip().lower()
 
     if choice == "s":
-
         network = detected
-
     else:
-
         network = input(
             "Ingrese red manualmente: "
         ).strip()
@@ -54,7 +58,6 @@ start_time = time.time()
 ips = []
 
 for i in range(1, 255):
-
     ips.append(f"{network}.{i}")
 
 
@@ -143,6 +146,15 @@ print(
 
 if results:
 
+    scan_date = datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
+
+    save_scan(
+        results,
+        scan_date
+    )
+
     csv_report = export_csv(results)
 
     html_report = export_html(
@@ -159,6 +171,10 @@ if results:
     print(csv_report)
     print(html_report)
     print(json_report)
+
+    print(
+        "\nInventario SQLite actualizado."
+    )
 
 else:
 
