@@ -19,6 +19,8 @@ def init_database():
 
         scan_date TEXT,
 
+        network TEXT,
+
         ip TEXT,
 
         hostname TEXT,
@@ -36,9 +38,15 @@ def init_database():
     """)
 
     conn.commit()
+
     conn.close()
 
-def save_scan(results, scan_date):
+
+def save_scan(
+    results,
+    scan_date,
+    network
+):
 
     conn = sqlite3.connect(
         DB_NAME
@@ -58,29 +66,59 @@ def save_scan(results, scan_date):
 
         cursor.execute(
             """
-            INSERT INTO devices (
+            INSERT INTO devices(
+
                 scan_date,
+
+                network,
+
                 ip,
+
                 hostname,
+
                 vendor,
+
                 model,
+
                 category,
+
                 risk,
+
                 services
+
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+
+            VALUES(
+
+                ?,?,?,?,?,?,?,?,?
+            )
             """,
+
             (
+
                 scan_date,
+
+                network,
+
                 host["ip"],
+
                 host["hostname"],
+
                 host["vendor"],
+
                 host["model"],
+
                 host["category"],
+
                 host["risk"],
-                ", ".join(services)
+
+                ", ".join(
+                    services
+                )
+
             )
         )
 
     conn.commit()
+
     conn.close()

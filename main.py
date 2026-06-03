@@ -4,24 +4,90 @@ from scanner.html_report import export_html
 from scanner.json_export import export_json
 from scanner.workers import run_threads
 from scanner.network import get_local_network
-from scanner.stats import calculate_stats
-from scanner.fingerprint import identify_device
-from scanner.risk import calculate_risk
+
 from scanner.database import (
     init_database,
     save_scan
 )
 
+from scanner.history import (
+    get_last_scan,
+    compare_scans
+)
+
+from scanner.stats_db import (
+    get_total_scans,
+    get_last_scan_date
+)
+
+from scanner.stats import (
+    calculate_stats
+)
+
+from scanner.fingerprint import identify_device
+from scanner.risk import calculate_risk
+
+from scanner.alerts import (
+    save_alerts
+)
+
 from datetime import datetime
 import time
 
+
+VERSION = "3.3"
+
+
+def scan_host(ip):
+
+    services = scan_ports(ip)
+
+    if not services:
+        return None
+
+    hostname = get_hostname(ip)
+
+    vendor, model, category = identify_device(
+        hostname,
+        services
+    )
+
+    risk = calculate_risk(
+        services
+    )
+
+    return {
+        "ip": ip,
+        "hostname": hostname,
+        "vendor": vendor,
+        "model": model,
+        "category": category,
+        "risk": risk,
+        "services": services
+    }
+
+
 print("=" * 50)
-print("NETWORK SCANNER PRO v3.0")
+print(f"NETWORK SCANNER PRO v{VERSION}")
 print("=" * 50)
+
 
 init_database()
 
+
+total_scans = get_total_scans()
+last_scan_date = get_last_scan_date()
+
+print(f"\nEscaneos guardados: {total_scans}")
+
+if last_scan_date:
+    print(f"Último escaneo: {last_scan_date}")
+else:
+    print("Último escaneo: ninguno")
+
+
 detected = get_local_network()
+
 
 if detected:
 
@@ -33,6 +99,7 @@ if detected:
 
     if choice == "s":
         network = detected
+
     else:
         network = input(
             "Ingrese red manualmente: "
@@ -41,141 +108,123 @@ if detected:
 else:
 
     network = input(
-        "Ingrese red (ej: 192.168.1): "
+        "Ingrese red manualmente: "
     ).strip()
 
-parts = network.split(".")
 
-if len(parts) != 3:
+previous_scan = get_last_scan(
+    network
+)
 
-    print("Formato inválido.")
-    exit()
 
 print("\nEscaneando red...\n")
 
-start_time = time.time()
 
-ips = []
+targets = []
 
 for i in range(1, 255):
-    ips.append(f"{network}.{i}")
+
+    targets.append(
+        f"{network}.{i}"
+    )
 
 
-def scan_host(ip):
-
-    services = scan_ports(ip)
-
-    if services:
-
-        hostname = get_hostname(ip)
-
-        vendor, model, category = identify_device(
-            hostname,
-            services
-        )
-
-        risk = calculate_risk(
-            services
-        )
-
-        print(f"[+] Host: {ip}")
-        print(f"    Nombre: {hostname}")
-        print(f"    Fabricante: {vendor}")
-        print(f"    Modelo: {model}")
-        print(f"    Categoria: {category}")
-        print(f"    Riesgo: {risk}")
-
-        for item in services:
-
-            print(
-                f"    {item['service']} "
-                f"(Puerto {item['port']})"
-            )
-
-        print()
-
-        return {
-            "ip": ip,
-            "hostname": hostname,
-            "vendor": vendor,
-            "model": model,
-            "category": category,
-            "risk": risk,
-            "services": services
-        }
-
-    return None
+start_time = time.time()
 
 
 results = run_threads(
     scan_host,
-    ips,
-    workers=20
+    targets
 )
 
+
+end_time = time.time()
+
+
 elapsed = round(
-    time.time() - start_time,
+    end_time - start_time,
     2
 )
 
-stats = calculate_stats(results)
 
-print("=" * 50)
-print("ESTADISTICAS")
-print("=" * 50)
+scan_date = datetime.now().strftime(
+    "%Y%m%d_%H%M%S"
+)
 
-for service, count in stats.items():
-
-    print(
-        f"{service:<6}: {count}"
-    )
-
-print()
 
 print("=" * 50)
 print("ESCANEO FINALIZADO")
 print("=" * 50)
 
-print(
-    f"Hosts encontrados: {len(results)}"
-)
+print(f"Red escaneada: {network}.0/24")
+print(f"Hosts encontrados: {len(results)}")
+print(f"Tiempo total: {elapsed} segundos")
 
-print(
-    f"Tiempo total: {elapsed} segundos"
-)
 
-if results:
+if previous_scan:
 
-    scan_date = datetime.now().strftime(
-        "%Y-%m-%d %H:%M:%S"
-    )
-
-    save_scan(
-        results,
-        scan_date
-    )
-
-    csv_report = export_csv(results)
-
-    html_report = export_html(
-        results,
-        stats,
-        elapsed
-    )
-
-    json_report = export_json(
+    new_devices, removed_devices = compare_scans(
+        network,
+        previous_scan,
         results
     )
 
-    print("\nReportes guardados:")
-    print(csv_report)
-    print(html_report)
-    print(json_report)
+    print("\n" + "=" * 50)
+    print("CAMBIOS DETECTADOS")
+    print("=" * 50)
 
-    print(
-        "\nInventario SQLite actualizado."
+    print("Comparado contra último escaneo guardado.")
+
+    print(f"\nNuevos: {len(new_devices)}")
+
+    for ip in new_devices:
+        print(f"+ {ip}")
+
+    print(f"\nDesaparecidos: {len(removed_devices)}")
+
+    for ip in removed_devices:
+        print(f"- {ip}")
+
+    save_alerts(
+        new_devices,
+        removed_devices
     )
 
 else:
 
-    print("\nNo se encontraron hosts.")
+    print("\nNo hay escaneos anteriores para esta red.")
+
+
+stats = calculate_stats(
+    results
+)
+
+
+csv_file = export_csv(
+    results
+)
+
+html_file = export_html(
+    results,
+    stats,
+    elapsed
+)
+
+json_file = export_json(
+    results
+)
+
+
+save_scan(
+    results,
+    scan_date,
+    network
+)
+
+
+print("\nReportes guardados:")
+print(csv_file)
+print(html_file)
+print(json_file)
+
+print("\nInventario actualizado.")
