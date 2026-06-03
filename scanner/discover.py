@@ -1,16 +1,20 @@
 import socket
 
+
 SERVICES = {
     22: "SSH",
     80: "HTTP",
     443: "HTTPS",
     445: "SMB",
-    3389: "RDP"
+    554: "RTSP",
+    3389: "RDP",
+    8080: "HTTP-ALT"
 }
+
 
 def scan_ports(ip):
 
-    detected_services = []
+    detected = []
 
     for port, service in SERVICES.items():
 
@@ -21,30 +25,41 @@ def scan_ports(ip):
                 socket.SOCK_STREAM
             )
 
-            sock.settimeout(0.1)
+            sock.settimeout(
+                0.1
+            )
 
-            result = sock.connect_ex((ip, port))
+            result = sock.connect_ex(
+                (
+                    ip,
+                    port
+                )
+            )
 
             sock.close()
 
             if result == 0:
 
-                detected_services.append({
+                detected.append({
                     "port": port,
                     "service": service
                 })
 
         except Exception:
+
             pass
 
-    return detected_services
+    return detected
 
 
 def get_hostname(ip):
 
     try:
-        hostname = socket.gethostbyaddr(ip)[0]
-        return hostname
+
+        return socket.gethostbyaddr(
+            ip
+        )[0]
 
     except Exception:
+
         return "Desconocido"
