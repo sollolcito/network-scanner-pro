@@ -1,89 +1,246 @@
-# Network Scanner Pro
+NETWORK SCANNER PRO
 
-Network Scanner Pro es una herramienta de descubrimiento y análisis de red desarrollada en Python.
-
-Permite detectar dispositivos con servicios accesibles en una red local, identificar nombres de host, clasificar dispositivos, generar reportes CSV y obtener estadísticas de la infraestructura analizada.
+CLI de descubrimiento, inventario y auditoría de red desarrollado principalmente desde Android usando Termux.
 
 ---
 
-## Características
+Estado del Proyecto
 
-### Descubrimiento de Red
+Versión estable pública:
 
-- Escaneo de redes IPv4 (/24)
-- Detección automática de red local
-- Descubrimiento de dispositivos con servicios accesibles
+v3.1 — Mobile Stable
 
-### Detección de Servicios
+Estado:
 
-Actualmente detecta:
+- Desarrollo móvil congelado
+- Repositorio público
+- Próxima etapa: refactor y expansión desde PC
+
+---
+
+Objetivo
+
+Construir una herramienta profesional de:
+
+- Network Discovery
+- Asset Inventory
+- Auditoría de red
+- Clasificación de dispositivos
+- Seguimiento histórico de cambios
+
+Sin dependencias pesadas y manteniendo una arquitectura simple.
+
+---
+
+Funcionalidades
+
+Descubrimiento
+
+- Descubrimiento automático de red local
+- Escaneo por rango /24
+- Escaneo TCP
+
+Puertos monitoreados:
 
 - SSH (22)
 - HTTP (80)
 - HTTPS (443)
 - SMB (445)
+- RTSP (554)
 - RDP (3389)
-
-### Identificación de Dispositivos
-
-Clasificación automática basada en hostname y servicios detectados:
-
-- Equipos Windows
-- Dispositivos UniFi
-- Access Points Ubiquiti
-- Dispositivos con SSH
-- Servidores Web
-- Dispositivos desconocidos
-
-### Reportes
-
-- Exportación CSV
-- Hostname
-- Fabricante estimado
-- Tipo de dispositivo
-- Servicios detectados
-
-### Estadísticas
-
-Generación automática de estadísticas:
-
-- Total de hosts detectados
-- Cantidad de servicios por tipo
-- Tiempo total de escaneo
-
-### Rendimiento
-
-- Escaneo concurrente mediante multithreading
-- Optimizado para Python 3
-- Compatible con Android (Termux), Linux y Windows
+- HTTP-ALT (8080)
 
 ---
 
-## Tecnologías Utilizadas
+Rendimiento
 
-- Python 3
-- Socket Programming
-- ThreadPoolExecutor
-- CSV Reporting
-- Git
-- GitHub
+- Multithreading
+- Escaneo paralelo
+- Detección rápida de hosts
 
 ---
 
-## Estructura del Proyecto
+Identificación
 
-```text
+- Resolución de hostname
+- Fingerprinting básico
+- Detección de fabricante
+- Clasificación por tipo
+
+Ejemplos:
+
+- Ubiquiti
+- Windows
+- Linux
+- Access Point
+- Network Device
+
+---
+
+Riesgo
+
+Evaluación automática:
+
+- BAJO
+- MEDIO
+- ALTO
+- CRÍTICO
+
+---
+
+Exportación
+
+Formatos soportados:
+
+- CSV
+- HTML
+- JSON
+
+---
+
+Inventario
+
+Base de datos:
+
+SQLite
+
+Características:
+
+- Persistencia local
+- Historial de escaneos
+- Comparación entre escaneos
+- Inventario separado por red
+
+---
+
+Arquitectura
+
 network-scanner-pro/
 
-├── main.py
-├── reports/
-│
-├── scanner/
-│   ├── discover.py
-│   ├── export.py
-│   ├── fingerprint.py
-│   ├── network.py
-│   ├── stats.py
-│   └── workers.py
-│
-└── README.md
+main.py
+
+scanner/
+
+discover.py
+network.py
+workers.py
+
+fingerprint.py
+risk.py
+
+database.py
+history.py
+
+export.py
+html_report.py
+json_export.py
+
+stats.py
+
+reports/
+
+network_inventory.db
+
+---
+
+Roadmap
+
+v1
+
+- Escaneo básico
+
+v2
+
+- Multithreading
+- Auto detección
+- Estadísticas
+- Fingerprinting
+- Clasificación
+- HTML
+- JSON
+- Riesgo
+
+v3
+
+- SQLite
+- Historial
+- Comparación entre escaneos
+- Inventario por red
+
+---
+
+Próxima etapa (PC)
+
+v4
+
+Objetivos:
+
+- Device dataclass
+- Repository Pattern
+- Tests
+- Refactor de exportadores
+- Separación CLI
+- Arquitectura más limpia
+
+No se planea agregar funcionalidades nuevas antes del refactor.
+
+---
+
+Instalación
+
+Clonar:
+
+git clone https://github.com/sollolcito/network-scanner-pro.git
+
+Entrar:
+
+cd network-scanner-pro
+
+Ejecutar:
+
+python main.py
+
+---
+
+Capturas
+
+Los reportes generados se almacenan en:
+
+reports/
+
+Formatos:
+
+scan.csv
+scan.html
+scan.json
+
+---
+
+Tecnologías
+
+- Python 3.13
+- SQLite
+- Git
+- GitHub
+- Termux
+- Android
+
+---
+
+Licencia
+
+Este repositorio se publica con fines educativos y de portfolio.
+
+Reservados los derechos sobre futuras versiones privadas y extensiones comerciales.
+
+---
+
+Nota del Autor
+
+Este proyecto fue desarrollado y evolucionado principalmente desde un teléfono Android utilizando Termux.
+
+El objetivo fue demostrar capacidad de aprendizaje, diseño incremental y construcción de herramientas reales con recursos limitados.
+
+Última versión móvil:
+
+v3.1 — Mobile Stablex
